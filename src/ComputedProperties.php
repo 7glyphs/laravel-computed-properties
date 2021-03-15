@@ -4,6 +4,8 @@ namespace N7olkachev\ComputedProperties;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 trait ComputedProperties
 {
@@ -33,7 +35,7 @@ trait ComputedProperties
         if (!array_key_exists($key, $this->attributes) && $this->hasComputedProperty($key)) {
             $query = $this->callComputedProperty($key, false);
             $result = (array) $query->first();
-            $this->attributes[$key] = array_first($result);
+            $this->attributes[$key] = Arr::first($result);
         }
 
         return parent::__get($key);
@@ -46,7 +48,7 @@ trait ComputedProperties
 
     public function computedPropertyMethodName($property)
     {
-        return 'computed' . ucfirst(camel_case($property));
+        return 'computed' . ucfirst(Str::camel($property));
     }
 
     public function callComputedProperty($property, $runningInQuery)
